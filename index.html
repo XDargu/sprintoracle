@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VeloraAI</title>
+<style>
+    :root {
+        --bg: #f7f8fb;
+        --card: #ffffff;
+        --text: #111827;
+        --muted: #667085;
+        --line: #e5e7eb;
+        --line-strong: #d0d5dd;
+        --accent: #2563eb;
+        --accent-dark: #1d4ed8;
+        --accent-soft: #eff6ff;
+        --green: #039855;
+        --amber: #dc6803;
+        --red: #d92d20;
+        --purple: #6941c6;
+        --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+        --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+            radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 34%),
+            linear-gradient(180deg, #ffffff 0%, var(--bg) 56%, #eef2f7 100%);
+        display: grid;
+        place-items: center;
+        padding: 32px 18px;
+    }
+
+    .page {
+        width: min(920px, 100%);
+    }
+
+    .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 40px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 780;
+        letter-spacing: -0.03em;
+        font-size: 20px;
+    }
+
+    .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 900;
+    }
+
+    .nav-note {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 560;
+    }
+
+    .hero {
+        text-align: center;
+        margin: 0 auto 34px;
+        max-width: 760px;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: #1e40af;
+        border: 1px solid #dbeafe;
+        font-size: 13px;
+        font-weight: 680;
+        margin-bottom: 18px;
+    }
+
+    .badge-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: clamp(40px, 6.4vw, 70px);
+        line-height: 0.98;
+        letter-spacing: -0.07em;
+        font-weight: 850;
+    }
+
+    .sub {
+        max-width: 680px;
+        margin: 20px auto 0;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.55;
+    }
+
+    .panel {
+        background: rgba(255,255,255,0.86);
+        border: 1px solid rgba(208, 213, 221, 0.72);
+        box-shadow: var(--shadow);
+        border-radius: var(--radius);
+        padding: 18px;
+        backdrop-filter: blur(18px);
+    }
+
+    .input-shell {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--card);
+    }
+
+    textarea {
+        display: block;
+        width: 100%;
+        min-height: 152px;
+        resize: vertical;
+        border: 0;
+        outline: 0;
+        padding: 22px;
+        font: inherit;
+        font-size: 16px;
+        line-height: 1.55;
+        color: var(--text);
+        background: transparent;
+    }
+
+    textarea::placeholder {
+        color: #98a2b3;
+    }
+
+    .analysis-panel {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+        padding: 14px;
+        border-top: 1px solid var(--line);
+        background: #fcfcfd;
+    }
+
+    .live-analysis {
+        min-width: 0;
+        display: grid;
+        gap: 10px;
+    }
+
+    .analysis-main {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 650;
+        min-height: 22px;
+    }
+
+    .analysis-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
+        flex: 0 0 auto;
+    }
+
+    .analysis-dot.active {
+        background: var(--accent);
+        box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+        animation: pulse 1.25s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        50% { transform: scale(1.25); opacity: 0.72; }
+    }
+
+    .signals {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        min-height: 30px;
+        align-items: center;
+    }
+
+    .signal {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        max-width: 100%;
+        padding: 6px 9px;
+        border-radius: 999px;
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        color: #475467;
+        font-size: 12px;
+        font-weight: 650;
+        white-space: nowrap;
+    }
+
+    .signal b {
+        color: #344054;
+        font-weight: 780;
+    }
+
+    .signal.low { background: #ecfdf3; border-color: #abefc6; color: #027a48; }
+    .signal.medium { background: #fffaeb; border-color: #fedf89; color: #b54708; }
+    .signal.high { background: #fef3f2; border-color: #fecdca; color: #b42318; }
+    .signal.info { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+    .signal.purple { background: #f4f3ff; border-color: #d9d6fe; color: #5925dc; }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .metric {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 14px;
+        padding: 10px 11px;
+        min-width: 0;
+    }
+
+    .metric-label {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 680;
+        margin-bottom: 5px;
+    }
+
+    .metric-value {
+        display: block;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .footer-row {
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
+        padding: 0 14px 14px;
+        background: #fcfcfd;
+    }
+
+    button {
+        border: 0;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .estimate {
+        min-width: 154px;
+        height: 50px;
+        border-radius: 14px;
+        color: white;
+        background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+        font-weight: 760;
+        box-shadow: 0 12px 24px rgba(37,99,235,0.22);
+        transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+        margin-left: auto;
+    }
+
+    .estimate:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 30px rgba(37,99,235,0.26);
+    }
+
+    .estimate:active {
+        transform: translateY(0);
+    }
+
+    .estimate:disabled {
+        opacity: 0.58;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .below {
+        display: flex;
+        justify-content: center;
+        gap: 22px;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 13px;
+        flex-wrap: wrap;
+    }
+
+    .below span {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .check {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #ecfdf3;
+        color: #039855;
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+    .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-items: center;
+        padding: 20px;
+        background: rgba(2, 6, 23, 0.72);
+        backdrop-filter: blur(16px);
+        z-index: 10;
+    }
+
+    .modal.active {
+        display: grid;
+    }
+
+    .reveal {
+        position: relative;
+        width: min(980px, 100%);
+        border-radius: 28px;
+        overflow: hidden;
+        background: #020617;
+        color: white;
+        box-shadow: 0 40px 110px rgba(0,0,0,0.55);
+        border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .video-wrap {
+        position: relative;
+        height: min(62vh, 560px);
+        min-height: 420px;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 50% 50%, rgba(37,99,235,0.25), transparent 35%),
+            #020617;
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: contrast(1.05) saturate(0.92) brightness(0.72);
+        transform: scale(1.02);
+    }
+
+    .video-fallback {
+        position: absolute;
+        inset: 0;
+        display: none;
+        place-items: center;
+        padding: 32px;
+        text-align: center;
+        background:
+            radial-gradient(circle at 50% 40%, rgba(251,191,36,0.16), transparent 28%),
+            linear-gradient(135deg, #111827, #020617);
+    }
+
+    .video-fallback.show {
+        display: grid;
+    }
+
+    .fallback-card {
+        max-width: 540px;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(12px);
+    }
+
+    .fallback-card h2 {
+        margin: 0 0 10px;
+        font-size: 28px;
+        letter-spacing: -0.04em;
+    }
+
+    .fallback-card p {
+        margin: 0;
+        color: rgba(255,255,255,0.72);
+        line-height: 1.55;
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(180deg, rgba(2,6,23,0.20), rgba(2,6,23,0.10) 42%, rgba(2,6,23,0.84) 100%),
+            radial-gradient(circle at 50% 70%, transparent 0%, rgba(2,6,23,0.16) 55%, rgba(2,6,23,0.58) 100%);
+        pointer-events: none;
+    }
+
+    .scanline {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+            180deg,
+            rgba(255,255,255,0.025) 0px,
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px,
+            transparent 5px
+        );
+        mix-blend-mode: overlay;
+        opacity: 0.8;
+    }
+
+    .result-layer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 34px;
+        display: grid;
+        gap: 12px;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .process {
+        min-height: 24px;
+        color: rgba(255,255,255,0.72);
+        font-size: 14px;
+        font-weight: 680;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .result {
+        min-height: 92px;
+        display: grid;
+        place-items: center;
+    }
+
+    .estimate-value {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+        font-size: clamp(50px, 9vw, 108px);
+        line-height: 0.9;
+        letter-spacing: -0.085em;
+        font-weight: 900;
+        text-shadow: 0 10px 50px rgba(0,0,0,0.38);
+    }
+
+    .estimate-value.visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        transition: all 760ms cubic-bezier(.2,1.25,.2,1);
+    }
+
+    .confidence {
+        min-height: 22px;
+        opacity: 0;
+        color: rgba(255,255,255,0.70);
+        font-size: 14px;
+    }
+
+    .confidence.visible {
+        opacity: 1;
+        transition: opacity 450ms ease 420ms;
+    }
+
+    .close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        z-index: 4;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.12);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.16);
+        font-size: 25px;
+        line-height: 1;
+    }
+
+    .close:hover {
+        background: rgba(255,255,255,0.18);
+    }
+
+    .progress {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 0%;
+        background: linear-gradient(90deg, #60a5fa, #fbbf24);
+        z-index: 5;
+    }
+
+    .progress.running {
+        animation: progress 6.9s linear forwards;
+    }
+
+    @keyframes progress {
+        to { width: 100%; }
+    }
+
+    @media (max-width: 760px) {
+        .nav {
+            margin-bottom: 44px;
+        }
+
+        .nav-note {
+            display: none;
+        }
+
+        .analysis-panel {
+            grid-template-columns: 1fr;
+        }
+
+        .metric-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .footer-row {
+            flex-direction: column;
+        }
+
+        .estimate {
+            width: 100%;
+        }
+
+        .video-wrap {
+            min-height: 520px;
+            height: 70vh;
+        }
+
+        .result-layer {
+            padding: 26px 18px 32px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .metric-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+<main class="page">
+    <header class="nav">
+        <div class="brand">
+            <div class="logo">A</div>
+            <span>VeloraAI</span>
+        </div>
+        <div class="nav-note">Private beta · Delivery intelligence platform</div>
+    </header>
+
+    <section class="hero">
+        <div class="badge"><span class="badge-dot"></span> AI-assisted delivery forecasting</div>
+        <h1>Smarter forecasts for engineering teams.</h1>
+        <p class="sub">Describe a task, feature, bug, or technical initiative. VeloraAI evaluates scope, complexity, risk, and uncertainty to produce an accurate forecast</p>
+    </section>
+
+    <section class="panel">
+        <div class="input-shell">
+            <textarea id="taskInput" placeholder="Briefly describe the work to estimate..."></textarea>
+
+            <div class="analysis-panel">
+                <div class="live-analysis">
+                    <div class="analysis-main">
+                        <span class="analysis-dot" id="analysisDot"></span>
+                        <span id="analysisStatus">Waiting for task description</span>
+                    </div>
+                    <div class="signals" id="signals">
+                        <span class="signal">No scope detected yet</span>
+                    </div>
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric">
+                        <span class="metric-label">Scope</span>
+                        <span class="metric-value" id="scopeMetric">—</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Risk</span>
+                        <span class="metric-value" id="riskMetric">—</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Confidence</span>
+                        <span class="metric-value" id="confidenceMetric">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-row">
+                <button id="estimateBtn" class="estimate" disabled>Estimate</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="below">
+        <span><i class="check">✓</i> Scope analysis</span>
+        <span><i class="check">✓</i> Risk weighting</span>
+        <span><i class="check">✓</i> Delivery forecast</span>
+    </div>
+</main>
+
+<div class="modal" id="modal">
+    <section class="reveal">
+        <button class="close" id="closeBtn" aria-label="Close">×</button>
+        <div class="video-wrap">
+            <video id="oracleVideo" autoplay muted playsinline preload="auto"></video>
+
+            <div class="video-fallback" id="videoFallback">
+                <div class="fallback-card">
+                    <h2>Video clip missing</h2>
+                    <p>
+                        Add one or more MP4 files in a <b>videos</b> folder next to this HTML file.
+                        The reveal is already wired for palm reading, tarot, astrology, and ritual-style clips.
+                    </p>
+                </div>
+            </div>
+
+            <div class="overlay"></div>
+            <div class="scanline"></div>
+
+            <div class="result-layer">
+                <div class="process" id="process">Analysing delivery uncertainty...</div>
+                <div class="result">
+                    <div class="estimate-value" id="estimateValue"></div>
+                </div>
+                <div class="confidence" id="confidence"></div>
+            </div>
+
+            <div class="progress" id="progress"></div>
+        </div>
+    </section>
+</div>
+
+<script>
+const taskInput = document.getElementById("taskInput");
+const estimateBtn = document.getElementById("estimateBtn");
+const modal = document.getElementById("modal");
+const closeBtn = document.getElementById("closeBtn");
+const oracleVideo = document.getElementById("oracleVideo");
+const videoFallback = document.getElementById("videoFallback");
+const processEl = document.getElementById("process");
+const estimateValue = document.getElementById("estimateValue");
+const confidence = document.getElementById("confidence");
+const progress = document.getElementById("progress");
+
+const analysisDot = document.getElementById("analysisDot");
+const analysisStatus = document.getElementById("analysisStatus");
+const signalsEl = document.getElementById("signals");
+const scopeMetric = document.getElementById("scopeMetric");
+const riskMetric = document.getElementById("riskMetric");
+const confidenceMetric = document.getElementById("confidenceMetric");
+
+const clips = [
+    "videos/ouija.mp4",
+    "videos/crystal-ball.mp4",
+    "videos/ritual.mp4",
+];
+
+const confidenceLines = [
+    "Estimate assumes software behaves as intended.",
+    "Forecast may collapse upon observation.",
+    "Accuracy not guaranteed in this universe.",
+    "Confidence adjusted after consulting the ancestors.",
+    "The spirits remain strangely silent on this one.",
+    "One engineer reported seeing a bad omen.",
+    "The backlog resisted divination.",
+    "Estimate generated under a waxing moon.",
+    "Scope creep detected in the astral plane.",
+    "Additional requirements may materialize spontaneously.",
+    "The ritual was interrupted by a production incident.",
+    "The sprint spirits demand a sacrifice.",
+    "Confidence reduced due to retroactive requirements.",
+    "The deployment gods have been angered.",
+    "Prediction contaminated by legacy code.",
+    "The oracle sensed hidden dependencies nearby.",
+    "The feature has been cursed by ancient APIs.",
+    "Time itself appears nonlinear for this task.",
+    "Estimate excludes meetings, reality, and human factors.",
+    "Results may vary after talking to stakeholders.",
+    "The spirits recommend adding two extra weeks.",
+    "Historical evidence suggests doubling the estimate.",
+    "This estimate was produced without opening the codebase.",
+    "Requirements remain in a quantum superposition.",
+    "The crystal backlog appears unusually cloudy today.",
+    "Technical debt has achieved sentience.",
+    "The CI pipeline emitted dark energies.",
+    "Unknown unknowns have become known unknowns.",
+    "Confidence inversely proportional to management enthusiasm.",
+    "The prophecy grows weaker near release dates.",
+    "The sprint ancestors whisper: 'add a buffer.'",
+    "The estimation bones landed poorly.",
+    "Stakeholder alignment could not be divined.",
+    "The roadmap stars are not in alignment.",
+    "Mercury is in retrograde and so is production.",
+    "A senior engineer has muttered 'it depends.'",
+    "The ritual detected signs of a rewrite.",
+    "The estimate changed after being shown to management.",
+    "Prediction accuracy decreases after implementation starts.",
+    "The spirits strongly advise against touching legacy code.",
+    "The oracle requests a discovery phase.",
+    "The task may awaken additional tasks.",
+    "The gods of scope remain unsatisfied.",
+    "Warning: feature may contain hidden side quests.",
+    "The estimate has been blessed by Jira.",
+    "An ancient prophecy foretold this refactor.",
+    "The deployment stars are unfavorable.",
+    "The velocity oracle demands more story points.",
+    "Confidence recalculated after a goat sacrifice.",
+    "Warning: project manager observed nearby."
+];
+
+const keywordGroups = {
+    frontend: ["ui", "ux", "css", "html", "frontend", "front-end", "react", "vue", "angular", "canvas", "screen", "page", "component", "button", "form"],
+    backend: ["backend", "api", "server", "database", "db", "sql", "endpoint", "service", "microservice", "cache", "queue", "worker"],
+    infrastructure: ["docker", "kubernetes", "aws", "azure", "gcp", "deploy", "deployment", "ci", "cd", "pipeline", "infra", "cloud", "hosting"],
+    data: ["analytics", "tracking", "metrics", "dashboard", "report", "event", "telemetry", "data", "etl", "warehouse"],
+    ai: ["ai", "ml", "model", "llm", "prompt", "embedding", "classification", "prediction", "training", "inference"],
+    gameplay: ["game", "player", "enemy", "ai behavior", "pathfinding", "physics", "animation", "level", "quest", "inventory"],
+    quality: ["test", "tests", "qa", "automation", "bug", "fix", "flaky", "crash", "regression", "validation"],
+    security: ["auth", "login", "oauth", "permission", "roles", "security", "gdpr", "privacy", "encryption", "token"]
+};
+
+const riskKeywords = {
+    integration: ["integrate", "integration", "third-party", "external", "api", "webhook", "sync", "import", "export", "migration", "legacy"],
+    uncertainty: ["maybe", "probably", "roughly", "somehow", "unknown", "not sure", "investigate", "research", "explore", "spike"],
+    scale: ["scale", "performance", "large", "millions", "real-time", "concurrent", "latency", "optimize", "fast", "memory"],
+    platform: ["ios", "android", "console", "windows", "mac", "linux", "browser", "mobile", "cross-platform"],
+    collaboration: ["stakeholder", "design", "product", "legal", "compliance", "approval", "review", "localization", "certification"]
+};
+
+const taskTypes = [
+    { label: "Bug fix", words: ["bug", "fix", "crash", "broken", "issue", "error", "regression"] },
+    { label: "New feature", words: ["add", "create", "implement", "build", "feature", "support"] },
+    { label: "Refactor", words: ["refactor", "rewrite", "clean up", "rework", "modernize", "migrate"] },
+    { label: "Investigation", words: ["investigate", "research", "spike", "explore", "find out", "understand"] },
+    { label: "Optimization", words: ["optimize", "performance", "faster", "latency", "memory", "loading"] },
+    { label: "Integration", words: ["integrate", "connect", "sync", "webhook", "api"] }
+];
+
+let timers = [];
+let currentAnalysis = null;
+
+function pick(list) {
+    return list[Math.floor(Math.random() * list.length)];
+}
+
+function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+}
+
+function hasAny(text, words) {
+    return words.some(word => text.includes(word));
+}
+
+function countMatches(text, words) {
+    return words.reduce((count, word) => count + (text.includes(word) ? 1 : 0), 0);
+}
+
+function titleCase(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function analyseTask(raw) {
+    const text = raw.toLowerCase().trim();
+    const words = text.split(/\s+/).filter(Boolean);
+    const lengthScore = Math.min(4, Math.floor(words.length / 12));
+
+    const domains = Object.entries(keywordGroups)
+        .map(([name, terms]) => ({ name, matches: countMatches(text, terms) }))
+        .filter(item => item.matches > 0)
+        .sort((a, b) => b.matches - a.matches);
+
+    const risks = Object.entries(riskKeywords)
+        .map(([name, terms]) => ({ name, matches: countMatches(text, terms) }))
+        .filter(item => item.matches > 0)
+        .sort((a, b) => b.matches - a.matches);
+
+    const detectedTypes = taskTypes
+        .map(type => ({ label: type.label, matches: countMatches(text, type.words) }))
+        .filter(type => type.matches > 0)
+        .sort((a, b) => b.matches - a.matches);
+
+    const vagueTerms = countMatches(text, ["simple", "quick", "easy", "small", "just", "only", "maybe", "probably", "somehow", "etc", "and so on"]);
+    const conjunctions = countMatches(text, [" and ", ",", " also ", " plus ", " with "]);
+    const explicitConstraints = countMatches(text, ["must", "should", "needs to", "without", "while", "support", "compatible", "existing"]);
+
+    let complexityScore = lengthScore + domains.length + risks.length + Math.min(3, conjunctions) + Math.min(2, explicitConstraints);
+    if (hasAny(text, ["legacy", "migration", "multiplayer", "real-time", "performance", "security", "gdpr", "cross-platform"])) complexityScore += 2;
+    if (hasAny(text, ["refactor", "rewrite", "existing behavior", "without changing"])) complexityScore += 2;
+    complexityScore = Math.min(10, complexityScore);
+
+    let riskScore = risks.reduce((sum, r) => sum + r.matches, 0) + vagueTerms + Math.floor(complexityScore / 3);
+    if (text.length < 45 && text.length > 0) riskScore += 2;
+    riskScore = Math.min(10, riskScore);
+
+    const confidenceScore = Math.max(18, Math.min(91, 92 - riskScore * 6 - vagueTerms * 4 + explicitConstraints * 3 + Math.min(words.length, 35) * 0.55));
+
+    let scopeLabel = "Low";
+    if (complexityScore >= 4) scopeLabel = "Medium";
+    if (complexityScore >= 7) scopeLabel = "High";
+
+    let riskLabel = "Low";
+    if (riskScore >= 4) riskLabel = "Medium";
+    if (riskScore >= 7) riskLabel = "High";
+
+    const mainType = detectedTypes[0]?.label || (text.length ? "General task" : "No task");
+    const primaryDomain = domains[0]?.name ? titleCase(domains[0].name) : null;
+
+    return {
+        text,
+        words,
+        domains,
+        risks,
+        detectedTypes,
+        vagueTerms,
+        complexityScore,
+        riskScore,
+        confidenceScore: Math.round(confidenceScore),
+        scopeLabel,
+        riskLabel,
+        mainType,
+        primaryDomain
+    };
+}
+
+function getToneClass(label) {
+    if (label === "Low") return "low";
+    if (label === "Medium") return "medium";
+    if (label === "High") return "high";
+    return "info";
+}
+
+function renderSignal(text, tone = "") {
+    const span = document.createElement("span");
+    span.className = `signal ${tone}`.trim();
+    span.innerHTML = text;
+    return span;
+}
+
+function updateLiveAnalysis() {
+    const raw = taskInput.value;
+    const analysis = analyseTask(raw);
+    currentAnalysis = analysis;
+
+    signalsEl.innerHTML = "";
+
+    if (!analysis.text) {
+        analysisDot.classList.remove("active");
+        analysisStatus.textContent = "Waiting for task description";
+        signalsEl.appendChild(renderSignal("No scope detected yet"));
+        scopeMetric.textContent = "—";
+        riskMetric.textContent = "—";
+        confidenceMetric.textContent = "—";
+        estimateBtn.disabled = true;
+        return;
+    }
+
+    analysisDot.classList.add("active");
+    estimateBtn.disabled = false;
+
+    const domainPart = analysis.primaryDomain ? ` · ${analysis.primaryDomain}` : "";
+    analysisStatus.textContent = `Analysing ${analysis.mainType.toLowerCase()}${domainPart}`;
+
+    signalsEl.appendChild(renderSignal(`<b>${analysis.mainType}</b> detected`, "info"));
+
+    if (analysis.primaryDomain) {
+        signalsEl.appendChild(renderSignal(`${analysis.primaryDomain} surface`, "purple"));
+    }
+
+    if (analysis.domains.length > 1) {
+        signalsEl.appendChild(renderSignal(`${analysis.domains.length} domains`, "medium"));
+    }
+
+    if (analysis.risks.length) {
+        const riskNames = analysis.risks.slice(0, 2).map(r => titleCase(r.name)).join(" + ");
+        signalsEl.appendChild(renderSignal(`${riskNames} risk`, getToneClass(analysis.riskLabel)));
+    }
+
+    if (analysis.vagueTerms > 0) {
+        signalsEl.appendChild(renderSignal("Ambiguity detected", "medium"));
+    }
+
+    if (analysis.words.length < 8) {
+        signalsEl.appendChild(renderSignal("Low context", "medium"));
+    } else if (analysis.words.length > 30) {
+        signalsEl.appendChild(renderSignal("Rich context", "low"));
+    }
+
+    if (analysis.complexityScore >= 8) {
+        signalsEl.appendChild(renderSignal("Discovery recommended", "high"));
+    }
+
+    scopeMetric.textContent = analysis.scopeLabel;
+    riskMetric.textContent = analysis.riskLabel;
+    confidenceMetric.textContent = `${analysis.confidenceScore}%`;
+}
+
+function resetReveal() {
+    clearTimers();
+    processEl.textContent = "";
+    estimateValue.textContent = "";
+    confidence.textContent = "";
+    estimateValue.classList.remove("visible");
+    confidence.classList.remove("visible");
+
+    progress.classList.remove("running");
+    void progress.offsetWidth;
+    progress.classList.add("running");
+}
+
+function chooseEstimate() {
+    const analysis = currentAnalysis || analyseTask(taskInput.value);
+
+    const estimates = [
+        "2 days",
+        "4 days",
+        "1 week",
+        "2 weeks",
+        "3 weeks",
+        "6 weeks",
+        "1 quarter",
+        "TBD",
+        "It depends"
+    ];
+
+    if (!analysis.text) return pick(estimates);
+
+    if (analysis.riskScore >= 8 || analysis.complexityScore >= 9) {
+        return pick(["6 weeks", "1 quarter", "TBD", "It depends"]);
+    }
+
+    if (analysis.mainType === "Bug fix") {
+        if (analysis.riskScore >= 5) return pick(["4 days", "2 weeks", "TBD"]);
+        return pick(["2 days", "4 days", "1 week"]);
+    }
+
+    if (analysis.mainType === "Refactor") {
+        return pick(["3 weeks", "6 weeks", "1 quarter", "TBD"]);
+    }
+
+    if (analysis.mainType === "Investigation") {
+        return pick(["2 days", "1 week", "2 weeks", "TBD"]);
+    }
+
+    if (analysis.mainType === "Optimization") {
+        return pick(["1 week", "2 weeks", "3 weeks", "TBD"]);
+    }
+
+    if (analysis.scopeLabel === "Low") return pick(["2 days", "4 days", "1 week"]);
+    if (analysis.scopeLabel === "Medium") return pick(["1 week", "2 weeks", "3 weeks"]);
+    return pick(["3 weeks", "6 weeks", "1 quarter", "It depends"]);
+}
+
+function startReveal() {
+    updateLiveAnalysis();
+    resetReveal();
+
+    modal.classList.add("active");
+    videoFallback.classList.remove("show");
+
+    const clip = pick(clips);
+    oracleVideo.src = clip;
+    oracleVideo.currentTime = 0;
+    oracleVideo.play().catch(() => {
+        videoFallback.classList.add("show");
+    });
+
+    oracleVideo.onerror = () => {
+        videoFallback.classList.add("show");
+    };
+
+    const analysis = currentAnalysis || analyseTask(taskInput.value);
+
+    const genericLines = [
+        "Communing with the spirits...",
+        "Reading the ancient backlog...",
+        "Casting estimation bones...",
+        "Consulting the sprint ancestors...",
+        "Interpreting recent omens...",
+        "Gazing into the crystal backlog...",
+        "Seeking wisdom beyond the veil...",
+        "Aligning roadmap chakras...",
+        "Appeasing the bug spirits...",
+        "Observing celestial burndown charts...",
+        "Reading traces in the CI smoke...",
+        "Consulting the feature shamans...",
+        "Measuring the karmic debt of technical debt...",
+        "Appealing to the gods of scope...",
+        "Summoning the velocity oracle...",
+        "Interpreting signs from the deployment stars...",
+        "Asking Jira for guidance...",
+        "Listening to whispers from production..."
+    ];
+
+    const domainLines = {
+        frontend: [
+            "Consulting the CSS spirits...",
+            "Reading UI omens...",
+            "Aligning layout energies..."
+        ],
+
+        backend: [
+            "Traversing the server realms...",
+            "Consulting the database elders...",
+            "Interpreting API prophecies..."
+        ],
+
+        ai: [
+            "Consulting the machine spirits...",
+            "Appeasing the stochastic gods...",
+            "Sampling from the latent plane..."
+        ],
+
+        infrastructure: [
+            "Appeasing the cloud deities...",
+            "Reading the container entrails...",
+            "Consulting the Kubernetes shamans..."
+        ],
+
+        gameplay: [
+            "Seeking guidance from the game spirits...",
+            "Balancing the cosmic mechanics...",
+            "Reading player destiny..."
+        ],
+
+        security: [
+            "Consulting the guardians of authentication...",
+            "Appeasing the security wardens...",
+            "Reading ancient access scrolls..."
+        ],
+
+        data: [
+            "Interpreting telemetry constellations...",
+            "Reading the sacred metrics...",
+            "Consulting the data oracles..."
+        ]
+    };
+
+    const riskLines = {
+        integration: [
+            "Consulting the integration spirits...",
+            "Appeasing the API gods..."
+        ],
+
+        uncertainty: [
+            "Peering through the fog of requirements...",
+            "Seeking clarity from uncertain realms..."
+        ],
+
+        scale: [
+            "Interpreting performance omens...",
+            "Consulting the spirits of scalability..."
+        ],
+
+        platform: [
+            "Aligning cross-platform energies...",
+            "Seeking harmony among devices..."
+        ],
+
+        collaboration: [
+            "Consulting the stakeholder council...",
+            "Appeasing the spirits of compliance..."
+        ]
+    };
+
+    const dynamicProcessLines = [
+        "Analysing delivery uncertainty...",
+
+        analysis.primaryDomain && Math.random() < 0.7
+            ? pick(domainLines[analysis.primaryDomain] ?? genericLines)
+            : pick(genericLines),
+
+        analysis.risks.length
+            ? pick(riskLines[analysis.risks[0].name] ?? genericLines)
+            : pick(genericLines),
+
+        pick(genericLines),
+        pick(genericLines),
+
+        Math.random() < 0.5
+            ? "Finalising estimate..."
+            : "Finalising prophecy..."
+    ];
+
+    dynamicProcessLines.forEach((line, index) => {
+        timers.push(setTimeout(() => {
+            processEl.textContent = line;
+        }, index * 1050));
+    });
+
+    timers.push(setTimeout(() => {
+        estimateValue.textContent = chooseEstimate();
+        confidence.textContent = pick(confidenceLines);
+        estimateValue.classList.add("visible");
+        confidence.classList.add("visible");
+        processEl.textContent = "Forecast complete";
+    }, 6900));
+}
+
+function closeReveal() {
+    modal.classList.remove("active");
+    clearTimers();
+    oracleVideo.pause();
+    oracleVideo.removeAttribute("src");
+    oracleVideo.load();
+}
+
+taskInput.addEventListener("input", updateLiveAnalysis);
+estimateBtn.addEventListener("click", startReveal);
+closeBtn.addEventListener("click", closeReveal);
+
+modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeReveal();
+});
+
+window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeReveal();
+});
+
+updateLiveAnalysis();
+</script>
+</body>
+</html>
