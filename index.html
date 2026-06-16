@@ -187,6 +187,7 @@
         background: #22c55e;
         box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
         flex: 0 0 auto;
+        display: none;
     }
 
     .analysis-dot.active {
@@ -195,8 +196,30 @@
         animation: pulse 1.25s ease-in-out infinite;
     }
 
+    .analysis-dot.visible {
+        display: block;
+    }
+
     @keyframes pulse {
         50% { transform: scale(1.25); opacity: 0.72; }
+    }
+
+    .analysis-spinner {
+        width: 12px;
+        height: 12px;
+        border: 2px solid #d0d5dd;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: none;
+    }
+
+    .analysis-spinner.visible {
+        display: inline-block;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
     .signals {
@@ -445,7 +468,7 @@
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 0;
+        bottom: 20px;
         padding: 34px;
         display: grid;
         gap: 12px;
@@ -494,6 +517,15 @@
     .confidence.visible {
         opacity: 1;
         transition: opacity 450ms ease 420ms;
+    }
+
+    .notice {
+        position: absolute;
+        bottom: 10px;
+        right: 20px;
+        min-height: 22px;
+        color: rgba(255, 255, 255, 0.70);
+        font-size: 10px;
     }
 
     .close {
@@ -599,6 +631,7 @@
                 <div class="live-analysis">
                     <div class="analysis-main">
                         <span class="analysis-dot" id="analysisDot"></span>
+                        <span class="analysis-spinner" id="analysisSpinner"></span>
                         <span id="analysisStatus">Waiting for task description</span>
                     </div>
                     <div class="signals" id="signals">
@@ -661,6 +694,8 @@
                 </div>
                 <div class="confidence" id="confidence"></div>
             </div>
+
+            <div class="notice">Powered by AI (Arcane Invocations)</div>
 
             <div class="progress" id="progress"></div>
         </div>
@@ -746,14 +781,89 @@ const confidenceLines = [
 ];
 
 const keywordGroups = {
-    frontend: ["ui", "ux", "css", "html", "frontend", "front-end", "react", "vue", "angular", "canvas", "screen", "page", "component", "button", "form"],
+    frontend: ["css", "html", "frontend", "front-end", "react", "vue", "angular", "canvas", "screen", "page", "component", "button", "form"],
     backend: ["backend", "api", "server", "database", "db", "sql", "endpoint", "service", "microservice", "cache", "queue", "worker"],
     infrastructure: ["docker", "kubernetes", "aws", "azure", "gcp", "deploy", "deployment", "ci", "cd", "pipeline", "infra", "cloud", "hosting"],
     data: ["analytics", "tracking", "metrics", "dashboard", "report", "event", "telemetry", "data", "etl", "warehouse"],
-    ai: ["ai", "ml", "model", "llm", "prompt", "embedding", "classification", "prediction", "training", "inference"],
     gameplay: ["game", "player", "enemy", "ai behavior", "pathfinding", "physics", "animation", "level", "quest", "inventory"],
     quality: ["test", "tests", "qa", "automation", "bug", "fix", "flaky", "crash", "regression", "validation"],
-    security: ["auth", "login", "oauth", "permission", "roles", "security", "gdpr", "privacy", "encryption", "token"]
+    security: ["auth", "login", "oauth", "permission", "roles", "security", "gdpr", "privacy", "encryption", "token"],
+    ai: [
+        "ml", "model", "llm", "prompt", "embedding", "classification", "prediction", "training", "inference", // Annoyingly, mixing LLM AI and game AI
+        "ai", "behavior tree", "blackboard", "perception",
+        "npc", "agent", "decision making", "utility ai",
+        "goal oriented", "planner", "fsm"
+    ],
+
+    animation: [
+        "animation", "anim", "montage", "blend space",
+        "state machine", "ik", "ragdoll", "motion matching",
+        "root motion", "pose"
+    ],
+
+    rendering: [
+        "rendering", "shader", "material", "lighting",
+        "ray tracing", "gpu", "draw call", "vfx",
+        "particle", "post process", "pipeline"
+    ],
+
+    networking: [
+        "multiplayer", "network", "replication",
+        "client", "server", "lag", "latency",
+        "prediction", "rollback", "authority"
+    ],
+
+    gameplay: [
+        "gameplay", "weapon", "combat", "inventory",
+        "quest", "player", "enemy", "ability",
+        "skill", "crafting", "interaction"
+    ],
+
+    levelDesign: [
+        "level", "map", "mission", "spawn",
+        "checkpoint", "world", "terrain",
+        "encounter", "poi"
+    ],
+
+    engine: [
+        "engine", "unreal", "unity", "ecs",
+        "entity", "component", "system",
+        "plugin", "editor", "tool"
+    ],
+
+    physics: [
+        "physics", "collision", "rigidbody",
+        "constraint", "vehicle", "ragdoll",
+        "simulation", "hitbox"
+    ],
+
+    audio: [
+        "audio", "sound", "music", "wwise",
+        "fmod", "voice", "spatial audio"
+    ],
+
+    ui: [
+        "ui", "hud", "widget", "menu",
+        "screen", "ux", "inventory screen"
+    ],
+
+    optimization: [
+        "performance", "optimize", "memory",
+        "streaming", "loading", "fps",
+        "cpu", "gpu", "profiling"
+    ],
+
+    console: [
+        "playstation", "xbox", "switch",
+        "console", "certification", "trc",
+        "lotcheck"
+    ],
+
+    liveops: [
+        "analytics", "telemetry", "event",
+        "battle pass", "season", "store",
+        "monetization", "live ops"
+    ],
 };
 
 const riskKeywords = {
@@ -775,6 +885,7 @@ const taskTypes = [
 
 let timers = [];
 let currentAnalysis = null;
+let analysisTimer = null;
 
 function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
@@ -874,7 +985,23 @@ function renderSignal(text, tone = "") {
     return span;
 }
 
+const analysisSpinner = document.getElementById("analysisSpinner");
+
+function showAnalysisSpinner() {
+    analysisSpinner.classList.add("visible");
+    analysisDot.classList.remove("visible");
+    analysisStatus.textContent = "Analyzing...";
+}
+
+function hideAnalysisSpinner() {
+    analysisSpinner.classList.remove("visible");
+    analysisDot.classList.add("visible");
+}
+
 function updateLiveAnalysis() {
+
+    hideAnalysisSpinner();
+
     const raw = taskInput.value;
     const analysis = analyseTask(raw);
     currentAnalysis = analysis;
@@ -896,10 +1023,11 @@ function updateLiveAnalysis() {
     estimateBtn.disabled = false;
 
     const domainPart = analysis.primaryDomain ? ` · ${analysis.primaryDomain}` : "";
-    analysisStatus.textContent = `Analysing ${analysis.mainType.toLowerCase()}${domainPart}`;
+    analysisStatus.textContent = `Estimation for ${analysis.mainType.toLowerCase()}${domainPart}`;
 
     signalsEl.appendChild(renderSignal(`<b>${analysis.mainType}</b> detected`, "info"));
 
+    console.log(analysis)
     if (analysis.primaryDomain) {
         signalsEl.appendChild(renderSignal(`${analysis.primaryDomain} surface`, "purple"));
     }
@@ -1142,7 +1270,18 @@ function closeReveal() {
     oracleVideo.load();
 }
 
-taskInput.addEventListener("input", updateLiveAnalysis);
+taskInput.addEventListener("input", () => {
+    clearTimeout(analysisTimer);
+
+    showAnalysisSpinner();
+
+    const delay = 300 + Math.random() * 500;
+
+    analysisTimer = setTimeout(() => {
+        updateLiveAnalysis();
+    }, delay);
+});
+
 estimateBtn.addEventListener("click", startReveal);
 closeBtn.addEventListener("click", closeReveal);
 
