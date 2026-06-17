@@ -640,6 +640,40 @@
             grid-template-columns: 1fr;
         }
     }
+
+    .share-row {
+        height: 0;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 850ms ease 800ms;
+    }
+
+    .share-row.visible {
+        height: auto;
+        display: flex;
+        opacity: 1;
+    }
+
+    .share-btn {
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.16);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.57);
+        backdrop-filter: blur(10px);
+        font-size: 16px;
+    }
+
+    .share-btn:hover {
+        background: rgba(255,255,255,0.24);
+    }
+
+    .share-btn.secondary {
+        background: rgba(255,255,255,0.08);
+    }
 </style>
 </head>
 <body>
@@ -724,6 +758,10 @@
                     <div class="estimate-value" id="estimateValue"></div>
                 </div>
                 <div class="confidence" id="confidence"></div>
+                <div class="share-row" id="shareRow">
+                    <button class="share-btn" id="shareBtn">Share prophecy</button>
+                    <button class="share-btn secondary" id="copyBtn">Copy estimate</button>
+                </div>
             </div>
 
             <div class="notice">Powered by AI (Arcane Invocations)</div>
@@ -751,6 +789,10 @@ const signalsEl = document.getElementById("signals");
 const scopeMetric = document.getElementById("scopeMetric");
 const riskMetric = document.getElementById("riskMetric");
 const confidenceMetric = document.getElementById("confidenceMetric");
+
+const shareRow = document.getElementById("shareRow");
+const shareBtn = document.getElementById("shareBtn");
+const copyBtn = document.getElementById("copyBtn");
 
 const clips = [
     "videos/ouija.mp4",
@@ -1121,6 +1163,7 @@ function resetReveal() {
     confidence.textContent = "";
     estimateValue.classList.remove("visible");
     confidence.classList.remove("visible");
+    shareRow.classList.remove("visible");
 
     progress.classList.remove("running");
     void progress.offsetWidth;
@@ -1314,6 +1357,7 @@ function startReveal() {
         estimateValue.classList.add("visible");
         confidence.classList.add("visible");
         processEl.textContent = "Forecast complete";
+        shareRow.classList.add("visible");
     }, 6900));
 }
 
@@ -1346,6 +1390,35 @@ modal.addEventListener("click", (event) => {
 
 window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeReveal();
+});
+
+function getShareText() {
+    const estimate = estimateValue.textContent || "It depends";
+    const line = confidence.textContent || "The estimation bones remain uncertain";
+
+    return `SprintOracle has spoken: ${estimate}.\n${line}\n\nhttps://www.sprintoracle.com/`;
+}
+
+shareBtn.addEventListener("click", async () => {
+    const text = getShareText();
+
+    if (navigator.share) {
+        await navigator.share({
+            title: "SprintOracle estimate",
+            text,
+            url: "https://www.sprintoracle.com/"
+        });
+    } else {
+        await navigator.clipboard.writeText(text);
+        shareBtn.textContent = "Copied!";
+        setTimeout(() => shareBtn.textContent = "Share prophecy", 1400);
+    }
+});
+
+copyBtn.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(getShareText());
+    copyBtn.textContent = "Copied!";
+    setTimeout(() => copyBtn.textContent = "Copy estimate", 1400);
 });
 
 updateLiveAnalysis();
