@@ -80,7 +80,6 @@
     .nav-note {
         color: var(--muted);
         font-size: 14px;
-        font-weight: 560;
     }
 
     .hero {
@@ -115,7 +114,7 @@
         font-size: clamp(40px, 6.4vw, 70px);
         line-height: 0.98;
         letter-spacing: -0.07em;
-        font-weight: 850;
+        font-weight: 650;
     }
 
     .sub {
@@ -627,7 +626,7 @@
 
     <section class="hero">
         <div class="badge"><span class="badge-dot"></span> AI-assisted delivery forecasting</div>
-        <h1>Smarter forecasts for engineering teams.</h1>
+        <h1>Smarter forecasts for engineering teams</h1>
         <p class="sub">Describe a task, feature, bug, or technical initiative. Sprint Oracle uses AI* to evaluates scope, complexity, risk, and uncertainty to produce an accurate forecast</p>
     </section>
 
@@ -732,56 +731,79 @@ const clips = [
 ];
 
 const confidenceLines = [
-    "Estimate assumes software behaves as intended.",
-    "Forecast may collapse upon observation.",
-    "Accuracy not guaranteed in this universe.",
-    "Confidence adjusted after consulting the ancestors.",
-    "The spirits remain strangely silent on this one.",
-    "One engineer reported seeing a bad omen.",
-    "The backlog resisted divination.",
-    "Estimate generated under a waxing moon.",
-    "Scope creep detected in the astral plane.",
-    "Additional requirements may materialize spontaneously.",
-    "The ritual was interrupted by a production incident.",
-    "The sprint spirits demand a sacrifice.",
-    "Confidence reduced due to retroactive requirements.",
-    "The deployment gods have been angered.",
-    "Prediction contaminated by legacy code.",
-    "The oracle sensed hidden dependencies nearby.",
-    "The feature has been cursed by ancient APIs.",
-    "Time itself appears nonlinear for this task.",
-    "Estimate excludes meetings, reality, and human factors.",
-    "Results may vary after talking to stakeholders.",
-    "The spirits recommend adding two extra weeks.",
-    "Historical evidence suggests doubling the estimate.",
-    "This estimate was produced without opening the codebase.",
-    "Requirements remain in a quantum superposition.",
-    "The crystal backlog appears unusually cloudy today.",
-    "Technical debt has achieved sentience.",
-    "The CI pipeline emitted dark energies.",
-    "Unknown unknowns have become known unknowns.",
-    "Confidence inversely proportional to management enthusiasm.",
-    "The prophecy grows weaker near release dates.",
-    "The sprint ancestors whisper: 'add a buffer.'",
-    "The estimation bones landed poorly.",
-    "Stakeholder alignment could not be divined.",
-    "The roadmap stars are not in alignment.",
-    "Mercury is in retrograde and so is production.",
-    "A senior engineer has muttered 'it depends.'",
-    "The ritual detected signs of a rewrite.",
-    "The estimate changed after being shown to management.",
-    "Prediction accuracy decreases after implementation starts.",
-    "The spirits strongly advise against touching legacy code.",
-    "The oracle requests a discovery phase.",
-    "The task may awaken additional tasks.",
-    "The gods of scope remain unsatisfied.",
-    "Warning: feature may contain hidden side quests.",
-    "The estimate has been blessed by Jira.",
-    "An ancient prophecy foretold this refactor.",
-    "The deployment stars are unfavorable.",
-    "The velocity oracle demands more story points.",
-    "Confidence recalculated after a goat sacrifice.",
-    "Warning: project manager observed nearby."
+    "Estimate assumes software behaves as intended",
+    "Forecast may collapse upon observation",
+    "Accuracy not guaranteed in this universe",
+    "Confidence adjusted after consulting the ancestors",
+    "The spirits remain strangely silent on this one",
+    "One engineer reported seeing a bad omen",
+    "The backlog resisted divination",
+    "Estimate generated under a waxing moon",
+    "Scope creep detected in the astral plane",
+    "Additional requirements may materialize spontaneously",
+    "The ritual was interrupted by a production incident",
+    "The sprint spirits demand a sacrifice",
+    "Confidence reduced due to retroactive requirements",
+    "The deployment gods have been angered",
+    "Prediction contaminated by legacy code",
+    "The oracle sensed hidden dependencies nearby",
+    "The feature has been cursed by ancient APIs",
+    "Time itself appears nonlinear for this task",
+    "Estimate excludes meetings, reality, and human factors",
+    "Results may vary after talking to stakeholders",
+    "The spirits recommend adding two extra weeks",
+    "Ancient runes suggest doubling the estimate",
+    "This estimate was produced without opening the codebase",
+    "Requirements remain in a quantum superposition",
+    "The crystal backlog appears unusually cloudy today",
+    "Technical debt has achieved sentience",
+    "The CI pipeline emitted dark energies",
+    "Unknown unknowns have become known unknowns",
+    "Confidence inversely proportional to management enthusiasm",
+    "The prophecy grows weaker near release dates",
+    "The sprint ancestors whisper: 'add a buffer'",
+    "The estimation bones landed poorly",
+    "Stakeholder alignment could not be divined",
+    "The roadmap stars are not in alignment",
+    "Mercury is in retrograde and so is production",
+    "A senior engineer has muttered 'it depends'",
+    "The ritual detected signs of a rewrite",
+    "The estimate changed after being shown to management",
+    "Prediction accuracy decreases after implementation starts",
+    "The spirits strongly advise against touching legacy code",
+    "The oracle requests a discovery phase",
+    "The task may awaken additional tasks",
+    "The gods of scope remain unsatisfied",
+    "Warning: feature may contain hidden side quests",
+    "The estimate has been blessed by Jira",
+    "An ancient prophecy foretold this refactor",
+    "The deployment stars are unfavorable",
+    "The velocity oracle demands more story points",
+    "Confidence recalculated after a goat sacrifice",
+    "Warning: project manager observed nearby",
+    "The project timeline exists outside linear time",
+    "The spirits found TODOs from ancient civilizations",
+    "The dependency tree extends beyond mortal sight",
+    "The stars predict unexpected blockers",
+    "The timeline is haunted by previous estimates",
+    "No prophecy survives implementation",
+    "Further investigation reveals additional investigation",
+    "Documentation appears largely ceremonial",
+    "Management enthusiasm exceeds safe thresholds",
+    "Many have estimated this task. Few have returned",
+    "Signs of an imminent rewrite have appeared in the entrails",
+    "No mortal fully understands this subsystem",
+    "The code remembers architects long departed",
+    "The estimate was performed under unfavorable omens",
+    "Beneath this task sleeps another task",
+    "The ritual chamber trembles with technical debt",
+    "The estimation bones foretell meetings about meetings",
+    "The estimation bones grow uneasy at the mention of alignment",
+    "The estimation bones speak of meetings that could have been messages",
+    "The stars predict bugs that manifest only under rare celestial alignments",
+    "No mortal has written tests for this subsystem",
+    "The prophecy weakens without test coverage",
+
 ];
 
 const keywordGroups = {
@@ -1082,6 +1104,7 @@ function chooseEstimate() {
 
     const estimates = [
         "2 days",
+        "3 days",
         "4 days",
         "1 week",
         "2 weeks",
@@ -1117,7 +1140,7 @@ function chooseEstimate() {
 
     if (analysis.scopeLabel === "Low") return pick(["2 days", "4 days", "1 week"]);
     if (analysis.scopeLabel === "Medium") return pick(["1 week", "2 weeks", "3 weeks"]);
-    return pick(["3 weeks", "6 weeks", "1 quarter", "It depends"]);
+    return pick(estimates);
 }
 
 function startReveal() {
