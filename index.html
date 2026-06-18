@@ -190,7 +190,7 @@
 
     .analysis-panel {
         display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
+        grid-template-columns: auto 0.7fr;
         gap: 14px;
         padding: 14px;
         border-top: 1px solid var(--line);
@@ -996,13 +996,13 @@ const estimates = [
 const keywordGroups = {
     frontend: ["css", "html", "frontend", "front-end", "react", "vue", "angular", "canvas", "screen", "page", "component", "button", "form"],
     backend: ["backend", "api", "server", "database", "db", "sql", "endpoint", "service", "microservice", "cache", "queue", "worker"],
-    infrastructure: ["docker", "kubernetes", "aws", "azure", "gcp", "deploy", "deployment", "ci", "cd", "pipeline", "infra", "cloud", "hosting"],
+    infrastructure: ["docker", "kubernetes", "aws", "azure", "gcp", "deploy", "deployment", "ci", "cd", "infra", "cloud", "hosting"],
     data: ["analytics", "tracking", "metrics", "dashboard", "report", "event", "telemetry", "data", "etl", "warehouse"],
     gameplay: ["game", "player", "enemy", "ai behavior", "pathfinding", "physics", "animation", "level", "quest", "inventory"],
     quality: ["test", "tests", "qa", "automation", "bug", "fix", "flaky", "crash", "regression", "validation"],
     security: ["auth", "login", "oauth", "permission", "roles", "security", "gdpr", "privacy", "encryption", "token"],
     ai: [
-        "ml", "model", "llm", "prompt", "embedding", "classification", "prediction", "training", "inference", // Annoyingly, mixing LLM AI and game AI
+        "ml", "ai model", "llm", "prompt", "embedding", "classification", "prediction", "training", "inference", // Annoyingly, mixing LLM AI and game AI
         "ai", "behavior tree", "blackboard", "perception",
         "npc", "agent", "decision making", "utility ai",
         "goal oriented", "planner", "fsm"
@@ -1017,7 +1017,7 @@ const keywordGroups = {
     rendering: [
         "rendering", "shader", "material", "lighting",
         "ray tracing", "gpu", "draw call", "vfx",
-        "particle", "post process", "pipeline"
+        "particle", "post process"
     ],
 
     networking: [
@@ -1041,7 +1041,7 @@ const keywordGroups = {
     engine: [
         "engine", "unreal", "unity", "ecs",
         "entity", "component", "system",
-        "plugin", "editor", "tool"
+        "plugin", "editor",
     ],
 
     physics: [
@@ -1075,7 +1075,81 @@ const keywordGroups = {
     liveops: [
         "analytics", "telemetry", "event",
         "battle pass", "season", "store",
-        "monetization", "live ops"
+        "monetization", "live ops",
+        "reward", "lootbox",
+        "gacha", "daily quest"
+    ],
+
+    art: [
+        "art", "model", "3d", "artist", "concept art", "character art",
+        "environment art", "prop", "texture", "textures",
+        "material", "materials", "skin", "skins",
+        "outfit", "cosmetic", "icon", "illustration",
+        "portrait", "splash", "thumbnail"
+    ],
+
+    techArt: [
+        "technical art", "tech art", "shader",
+        "vfx", "particle", "niagara",
+        "material graph", "hlsl",
+        "vertex animation", "art pipeline",
+    ],
+
+    audio: [
+        "audio", "sound", "music", "voice",
+        "voice over", "vo", "wwise",
+        "fmod", "sfx", "ambience",
+        "footstep", "dialogue",
+        "spatial audio", "soundtrack"
+    ],
+
+    animation: [
+        "animation", "anim", "animator",
+        "montage", "blend space",
+        "state machine", "ik",
+        "motion matching", "root motion",
+        "pose", "retargeting"
+    ],
+
+    cinematics: [
+        "cinematic", "cutscene",
+        "sequence", "sequencer",
+        "camera track", "camera shake",
+        "intro movie", "outro",
+        "dialogue scene"
+    ],
+
+    narrative: [
+        "story", "narrative",
+        "quest text", "dialogue",
+        "localisation", "localization",
+        "voice line", "lore",
+        "mission briefing"
+    ],
+
+    tools: [
+        "tool", "editor",
+        "pipeline", "workflow",
+        "importer", "exporter",
+        "debugging", "debug tool",
+        "visualizer", "automation",
+        "content creation"
+    ],
+
+    builds: [
+        "build", "cook",
+        "packaging", "patch",
+        "hotfix", "release",
+        "launcher", "installer",
+        "build pipeline"
+    ],
+
+    platform: [
+        "steam", "epic",
+        "playstation", "xbox",
+        "switch", "ps5",
+        "series x", "certification",
+        "trc", "lotcheck"
     ],
 };
 
@@ -1268,11 +1342,19 @@ function updateLiveAnalysis() {
 
     console.log(analysis)
     if (analysis.primaryDomain) {
-        signalsEl.appendChild(renderSignal(`${analysis.primaryDomain} surface`, "purple"));
+        signalsEl.appendChild(renderSignal(`${analysis.primaryDomain} domain`, "purple"));
     }
 
     if (analysis.domains.length > 1) {
-        signalsEl.appendChild(renderSignal(`${analysis.domains.length} domains`, "medium"));
+        signalsEl.appendChild(renderSignal(`${titleCase(analysis.domains[1].name)} domain`, "purple"));
+    }
+
+    if (analysis.domains.length > 2) {
+        signalsEl.appendChild(renderSignal(`${titleCase(analysis.domains[2].name)} domain`, "purple"));
+    }
+
+    if (analysis.domains.length > 3) {
+        signalsEl.appendChild(renderSignal(`+${analysis.domains.length - 3} domains`, "medium"));
     }
 
     if (analysis.risks.length) {
