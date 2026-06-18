@@ -807,79 +807,127 @@ const clips = [
     "videos/shared-ritual.mp4",
 ];
 
-const confidenceLines = [
-    "Estimate assumes software behaves as intended",
-    "Forecast may collapse upon observation",
-    "Accuracy not guaranteed in this universe",
-    "Confidence adjusted after consulting the ancestors",
-    "The spirits remain strangely silent on this one",
-    "One engineer reported seeing a bad omen",
-    "The backlog resisted divination",
-    "Scope creep detected in the astral plane",
-    "Additional requirements may materialize spontaneously",
-    "The ritual was interrupted by a production incident",
-    "The sprint spirits demand a sacrifice",
-    "Confidence reduced due to retroactive requirements",
-    "The deployment gods have been angered",
-    "Prediction contaminated by legacy code",
-    "The oracle sensed hidden dependencies nearby",
-    "The feature has been cursed by ancient APIs",
-    "Time itself appears nonlinear for this task",
-    "Estimate excludes meetings, reality, and human factors",
-    "Results may vary after talking to stakeholders",
-    "The spirits recommend adding two extra weeks",
-    "Ancient runes suggest doubling the estimate",
-    "This estimate was produced without opening the codebase",
-    "Requirements remain in a quantum superposition",
-    "The crystal backlog appears unusually cloudy today",
-    "Technical debt has achieved sentience",
-    "The CI pipeline emitted dark energies",
-    "Unknown unknowns have become known unknowns",
-    "Confidence inversely proportional to management enthusiasm",
-    "The prophecy grows weaker near release dates",
-    "The sprint ancestors whisper: 'add a buffer'",
-    "The estimation bones landed poorly",
-    "Stakeholder alignment could not be divined",
-    "The roadmap stars are not in alignment",
-    "Mercury is in retrograde and so is production",
-    "A senior engineer has muttered 'it depends'",
-    "The ritual detected signs of a rewrite",
-    "The estimate changed after being shown to management",
-    "Prediction accuracy decreases after implementation starts",
-    "The spirits strongly advise against touching legacy code",
-    "The oracle requests a discovery phase",
-    "The task may awaken additional tasks",
-    "The gods of scope remain unsatisfied",
-    "Warning: feature may contain hidden side quests",
-    "The estimate has been blessed by Jira",
-    "An ancient prophecy foretold this refactor",
-    "The deployment stars are unfavorable",
-    "The velocity oracle demands more story points",
-    "Confidence recalculated after a goat sacrifice",
-    "Warning: project manager observed nearby",
-    "The project timeline exists outside linear time",
-    "The spirits found TODOs from ancient civilizations",
-    "The dependency tree extends beyond mortal sight",
-    "The stars predict unexpected blockers",
-    "The timeline is haunted by previous estimates",
-    "No prophecy survives implementation",
-    "Further investigation reveals additional investigation",
-    "Documentation appears largely ceremonial",
-    "Management enthusiasm exceeds safe thresholds",
-    "Many have estimated this task. Few have returned",
-    "Signs of an imminent rewrite have appeared in the entrails",
-    "No mortal fully understands this subsystem",
-    "The code remembers architects long departed",
-    "The estimate was performed under unfavorable omens",
-    "Beneath this task sleeps another task",
-    "The ritual chamber trembles with technical debt",
-    "The estimation bones foretell meetings about meetings",
-    "The estimation bones grow uneasy at the mention of alignment",
-    "The estimation bones speak of meetings that could have been messages",
-    "The stars predict bugs that manifest only under rare celestial alignments",
-    "No mortal has written tests for this subsystem",
-    "The prophecy weakens without test coverage",
+const confidenceLinesByEstimate = {
+    short: [
+        "Estimate assumes software behaves as intended",
+        "Forecast may collapse upon observation",
+        "The spirits remain cautiously optimistic",
+        "The backlog offered only mild resistance",
+        "The estimation bones landed almost politely",
+        "A small omen, barely worth escalating",
+        "One engineer reported seeing a bad omen"
+    ],
 
+    medium: [
+        "Scope creep detected in the astral plane",
+        "Additional requirements may materialize spontaneously",
+        "The oracle sensed hidden dependencies nearby",
+        "The estimate has been blessed by Jira",
+        "Results may vary after talking to stakeholders",
+        "The sprint ancestors whisper: 'add a buffer'",
+        "The estimation bones grow uneasy at the mention of alignment",
+        "Estimate excludes meetings, reality, and human factors",
+        "Requirements remain in a quantum superposition",
+        "The crystal backlog appears unusually cloudy today",
+        "The CI pipeline emitted dark energies",
+        "Stakeholder alignment could not be divined",
+        "The roadmap stars are not in alignment",
+        "A senior engineer has muttered 'it depends'",
+        "The estimate changed after being shown to management",
+        "Prediction accuracy decreases after implementation starts",
+        "Warning: feature may contain hidden side quests",
+        "The deployment stars are unfavorable",
+        "The velocity oracle demands more story points",
+        "Warning: project manager observed nearby",
+        "The stars predict unexpected blockers",
+        "Further investigation reveals additional investigation",
+        "The estimation bones foretell meetings about meetings",
+        "The estimation bones speak of meetings that could have been messages",
+        "No mortal has written tests for this subsystem",
+        "The prophecy weakens without test coverage"
+    ],
+
+    long: [
+        "The spirits strongly advise against touching legacy code",
+        "Technical debt has achieved sentience",
+        "The dependency tree extends beyond mortal sight",
+        "Many have estimated this task. Few have returned",
+        "No mortal fully understands this subsystem",
+        "Beneath this task sleeps another task",
+        "The ritual detected signs of a rewrite",
+        "The oracle requests a discovery phase",
+        "The ritual was interrupted by a production incident",
+        "Confidence reduced due to retroactive requirements",
+        "The deployment gods have been angered",
+        "The feature has been cursed by ancient APIs",
+        "The spirits recommend adding two extra weeks",
+        "Confidence inversely proportional to management enthusiasm",
+        "The estimation bones landed poorly",
+        "The task may awaken additional tasks",
+        "The gods of scope remain unsatisfied",
+        "An ancient prophecy foretold this refactor",
+        "The spirits found TODOs from ancient civilizations",
+        "Signs of an imminent rewrite have appeared in the entrails",
+        "The code remembers architects long departed",
+        "The ritual chamber trembles with technical debt",
+        "The stars predict bugs that manifest only under rare celestial alignments"
+    ],
+
+    absurd: [
+        "Time itself appears nonlinear for this task",
+        "The project timeline exists outside linear time",
+        "The prophecy grows weaker near release dates",
+        "Ancient runes suggest doubling the estimate",
+        "Mercury is in retrograde and so is production",
+        "The timeline is haunted by previous estimates",
+        "No prophecy survives implementation",
+        "The sprint spirits demand a sacrifice",
+        "Confidence recalculated after a goat sacrifice"
+    ],
+
+    neutral: [
+        "Accuracy not guaranteed in this universe",
+        "Confidence adjusted after consulting the ancestors",
+        "The spirits remain strangely silent on this one",
+        "The backlog resisted divination",
+        "Estimate generated under a waxing moon",
+        "Prediction contaminated by legacy code",
+        "Unknown unknowns have become known unknowns",
+        "This estimate was produced without opening the codebase",
+        "Documentation appears largely ceremonial",
+        "Management enthusiasm exceeds safe thresholds",
+        "The estimate was performed under unfavorable omens"
+    ]
+};
+
+const estimates = [
+    { value: "1 hour", category: "short" },
+    { value: "4 hours", category: "short" },
+    { value: "6 hours", category: "short" },
+
+    { value: "1 day", category: "short" },
+    { value: "2 days", category: "short" },
+    { value: "3 days", category: "medium" },
+    { value: "4 days", category: "medium" },
+    { value: "1 week", category: "medium" },
+    { value: "A sprint", category: "medium" },
+    { value: "Two sprints", category: "medium" },
+
+    { value: "2 weeks", category: "medium" },
+    { value: "3 weeks", category: "medium" },
+    { value: "4 weeks", category: "medium" },
+    { value: "5 weeks", category: "medium" },
+    { value: "6 weeks", category: "medium" },
+    { value: "1 month", category: "medium" },
+    { value: "2 months", category: "medium" },
+
+    { value: "3 months", category: "long" },
+    { value: "4 months", category: "long" },
+    { value: "1 quarter", category: "long" },
+    { value: "1 year", category: "long" },
+    { value: "10 years", category: "long" },
+    { value: "5 leap years", category: "long" },
+    { value: "One fiscal year", category: "long" },
 ];
 
 const keywordGroups = {
@@ -1007,6 +1055,16 @@ function pickDeterministic(list, seed, salt = "") {
 
 function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
+}
+
+function chooseConfidenceLine(category, seed) {
+    const lines = [
+        ...confidenceLinesByEstimate[category],
+        ...confidenceLinesByEstimate.neutral,
+        ...confidenceLinesByEstimate.absurd
+    ];
+
+    return pickDeterministic(lines, seed, `confidence-${category}`);
 }
 
 function clearTimers() {
@@ -1195,40 +1253,7 @@ function resetReveal() {
 function chooseEstimate() {
     const analysis = currentAnalysis || analyseTask(taskInput.value);
 
-    const estimates = [
-        "1 hour",
-        "4 hours",
-        "6 hours",
-        "1 day",
-        "2 days",
-        "3 days",
-        "4 days",
-        "1 week",
-        "2 weeks",
-        "3 weeks",
-        "4 weeks",
-        "5 weeks",
-        "6 weeks",
-        "1 month",
-        "2 months",
-        "3 months",
-        "4 months",
-        "1 quarter",
-        "1 year",
-        "10 years",
-        
-        "5 leap years",
-
-        "One coffee break",
-        "Two coffee breaks",
-        "One lunch break",
-        "A long lunch break",
-        "One afternoon",
-
-        "A sprint",
-        "Two sprints",
-        "One fiscal year",
-    ];
+    return pickDeterministic(estimates, analysis.text, "estimate");
 
     /*if (!analysis.text) */return pickDeterministic(estimates, analysis.text, "estimate");
 
@@ -1397,8 +1422,10 @@ function startReveal() {
     });
 
     timers.push(setTimeout(() => {
-        estimateValue.textContent = chooseEstimate();
-        confidence.textContent = pickDeterministic(confidenceLines, seed, "confidence");
+        const estimate = chooseEstimate();
+
+        estimateValue.textContent = estimate.value;
+        confidence.textContent = chooseConfidenceLine(estimate.category, seed);
         estimateValue.classList.add("visible");
         confidence.classList.add("visible");
         processEl.textContent = "Forecast complete";
@@ -1437,11 +1464,19 @@ window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeReveal();
 });
 
+function createShareUrl() {
+    const url = new URL("https://www.sprintoracle.com/");
+    url.searchParams.set("task", taskInput.value.trim());
+
+    return url.toString();
+}
+
 function getShareText() {
+    
     const estimate = estimateValue.textContent || "It depends";
     const line = confidence.textContent || "The estimation bones remain uncertain";
 
-    return `SprintOracle has spoken: ${estimate}.\n${line}\n\nhttps://www.sprintoracle.com/`;
+    return `SprintOracle has spoken: ${estimate}.\n${line}\n\n${createShareUrl()}`;
 }
 
 shareBtn.addEventListener("click", async () => {
@@ -1451,7 +1486,7 @@ shareBtn.addEventListener("click", async () => {
         await navigator.share({
             title: "SprintOracle estimate",
             text,
-            url: "https://www.sprintoracle.com/"
+            url: createShareUrl()
         });
     } else {
         await navigator.clipboard.writeText(text);
